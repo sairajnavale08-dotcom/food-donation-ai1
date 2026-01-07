@@ -1,73 +1,220 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Food Rescue | AI Food Donation</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <!-- Google Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <title>Food Rescue | AI Food Donation</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    /* ===================== THEME FROM YOUR PREVIOUS CODE ===================== */
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #00c853, #64dd17);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      animation: gradientMove 6s infinite alternate;
+    }
+    @keyframes gradientMove {
+      from { background-position: left; }
+      to { background-position: right; }
+    }
+    .container {
+      background: rgba(255,255,255,0.15);
+      padding: 30px;
+      border-radius: 20px;
+      text-align: center;
+      color: white;
+      width: 90%;
+      max-width: 500px;
+      animation: fadeUp 1.5s ease;
+      margin-bottom: 20px;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    h1, h2 { margin-bottom: 20px; }
+    input, select, textarea, button {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 10px;
+      border: none;
+      outline: none;
+    }
+    button, .btn {
+      background: #ff9800;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    button:hover, .btn:hover { background: #e68900; }
+    #foodList .container {
+      margin-bottom: 15px;
+      background: rgba(255,255,255,0.25);
+      padding: 15px;
+      border-radius: 12px;
+    }
+    .hidden { display: none; }
+  </style>
 </head>
 <body>
 
-<nav class="navbar">
-    <h2><i class="fa-solid fa-bowl-food"></i> Food Rescue</h2>
-    <ul>
-        <li><a href="#home">Home</a></li>
-        <li><a href="#donate">Donate</a></li>
-        <li><a href="#available">Available</a></li>
-    </ul>
-</nav>
+<!-- ================= HOME PAGE ================= -->
+<div class="container" id="homePage">
+  <h1>🍽️ Save Food, Save Lives</h1>
+  <p>AI-powered food donation platform to reduce food wastage and help needy people.</p>
+  <button onclick="goRole()">Get Started</button>
+</div>
 
-<section class="hero" id="home">
-    <div class="hero-text">
-        <h1>Save Food. <span>Save Lives.</span></h1>
-        <p>AI-powered food donation system to reduce waste and fight hunger.</p>
-        <a href="#donate" class="btn">Donate Food</a>
+<!-- ================= ROLE PAGE ================= -->
+<div class="container hidden" id="rolePage">
+  <h2>Who are you?</h2>
+  <button onclick="showDonor()">🍱 I am a Donor</button>
+  <button onclick="showClaimer()">🤝 I am a Claimer</button>
+  <button onclick="backHome()">⬅ Back</button>
+</div>
+
+<!-- ================= DONOR PAGE ================= -->
+<div class="container hidden" id="donorPage">
+  <h2>Donate Food</h2>
+  <form id="donationForm">
+    <input type="text" placeholder="Food Name" required>
+    <select id="citySelect" required>
+      <option value="">Select City</option>
+      <option>Chennai</option><option>Bangalore</option><option>Hyderabad</option>
+      <option>Mumbai</option><option>Delhi</option><option>Kolkata</option>
+      <option>Pune</option><option>Ahmedabad</option><option>Jaipur</option>
+      <option>Lucknow</option><option>Kanpur</option><option>Nagpur</option>
+      <option>Indore</option><option>Bhopal</option><option>Patna</option>
+      <option>Vadodara</option><option>Ludhiana</option><option>Agra</option>
+      <option>Nashik</option><option>Faridabad</option><option>Meerut</option>
+      <option>Rajkot</option><option>Kalyan</option><option>Vasai</option>
+      <option>Varanasi</option><option>Srinagar</option><option>Amritsar</option>
+      <option>Coimbatore</option><option>Howrah</option><option>Gwalior</option>
+      <option>Jabalpur</option><option>Jodhpur</option><option>Madurai</option>
+      <option>Raipur</option><option>Allahabad</option><option>Ranchi</option>
+      <option>Gurgaon</option><option>Surat</option><option>Thane</option>
+      <option>Vijayawada</option><option>Jamshedpur</option><option>Dehradun</option>
+      <option>Salem</option><option>Tiruchirappalli</option><option>Hubli</option>
+      <option>Udaipur</option><option>Belgaum</option>
+    </select>
+    <input type="number" placeholder="Quantity (People)" required>
+    <input type="number" placeholder="Expiry Time (Hours)" required>
+    <textarea placeholder="Additional Notes"></textarea>
+    <button type="submit">Donate Food</button>
+  </form>
+  <button onclick="backHome()">⬅ Back</button>
+</div>
+
+<!-- ================= CLAIMER PAGE ================= -->
+<div class="container hidden" id="claimerPage">
+  <h2>Available Food</h2>
+  <div id="foodList"></div>
+  <button onclick="backHome()">⬅ Back</button>
+</div>
+
+<script>
+/* =================== NGO DATA =================== */
+const ngos = [
+    { name: "Hope Hostel", city: "Chennai", lat: 13.0827, lon: 80.2707 },
+    { name: "Care Trust", city: "Bangalore", lat: 12.9716, lon: 77.5946 },
+    { name: "Food For All", city: "Hyderabad", lat: 17.3850, lon: 78.4867 }
+];
+
+/* =================== CITY COORDINATES =================== */
+const cityCoords = {
+    "Chennai": { lat:13.0827, lon:80.2707 }, "Bangalore": { lat:12.9716, lon:77.5946 },
+    "Hyderabad": { lat:17.3850, lon:78.4867 }, "Mumbai": { lat:19.0760, lon:72.8777 },
+    "Delhi": { lat:28.6139, lon:77.2090 }, "Kolkata": { lat:22.5726, lon:88.3639 },
+    "Pune": { lat:18.5204, lon:73.8567 }, "Ahmedabad": { lat:23.0225, lon:72.5714 },
+    "Jaipur": { lat:26.9124, lon:75.7873 }, "Lucknow": { lat:26.8467, lon:80.9462 },
+    "Kanpur": { lat:26.4499, lon:80.3319 }, "Nagpur": { lat:21.1458, lon:79.0882 },
+    "Indore": { lat:22.7196, lon:75.8577 }, "Bhopal": { lat:23.2599, lon:77.4126 },
+    "Patna": { lat:25.5941, lon:85.1376 }, "Vadodara": { lat:22.3072, lon:73.1812 },
+    "Ludhiana": { lat:30.9000, lon:75.8573 }, "Agra": { lat:27.1767, lon:78.0081 },
+    "Nashik": { lat:19.9975, lon:73.7898 }, "Faridabad": { lat:28.4089, lon:77.3178 },
+    "Meerut": { lat:28.9845, lon:77.7064 }, "Rajkot": { lat:22.3039, lon:70.8022 },
+    "Kalyan": { lat:19.2403, lon:73.1300 }, "Vasai": { lat:19.3914, lon:72.8397 },
+    "Varanasi": { lat:25.3176, lon:82.9739 }, "Srinagar": { lat:34.0837, lon:74.7973 },
+    "Amritsar": { lat:31.6340, lon:74.8723 }, "Coimbatore": { lat:11.0168, lon:76.9558 },
+    "Howrah": { lat:22.5958, lon:88.2636 }, "Gwalior": { lat:26.2183, lon:78.1828 },
+    "Jabalpur": { lat:23.1815, lon:79.9864 }, "Jodhpur": { lat:26.2389, lon:73.0243 },
+    "Madurai": { lat:9.9252, lon:78.1198 }, "Raipur": { lat:21.2514, lon:81.6296 },
+    "Allahabad": { lat:25.4358, lon:81.8463 }, "Ranchi": { lat:23.3441, lon:85.3096 },
+    "Gurgaon": { lat:28.4595, lon:77.0266 }, "Surat": { lat:21.1702, lon:72.8311 },
+    "Thane": { lat:19.2183, lon:72.9781 }, "Vijayawada": { lat:16.5062, lon:80.6480 },
+    "Jamshedpur": { lat:22.8046, lon:86.2029 }, "Dehradun": { lat:30.3165, lon:78.0322 },
+    "Salem": { lat:11.6643, lon:78.1460 }, "Tiruchirappalli": { lat:10.7905, lon:78.7047 },
+    "Hubli": { lat:15.3647, lon:75.1230 }, "Udaipur": { lat:24.5854, lon:73.7125 },
+    "Belgaum": { lat:15.8497, lon:74.4977 }
+};
+
+/* =================== LOAD DONATIONS =================== */
+let donations = JSON.parse(localStorage.getItem("donations")) || [];
+
+/* =================== NAVIGATION =================== */
+function goRole(){ document.getElementById("homePage").classList.add("hidden"); document.getElementById("rolePage").classList.remove("hidden"); }
+function showDonor(){ document.getElementById("rolePage").classList.add("hidden"); document.getElementById("donorPage").classList.remove("hidden"); }
+function showClaimer(){ document.getElementById("rolePage").classList.add("hidden"); document.getElementById("claimerPage").classList.remove("hidden"); displayFood(); }
+function backHome(){ document.getElementById("homePage").classList.remove("hidden"); document.getElementById("rolePage").classList.add("hidden"); document.getElementById("donorPage").classList.add("hidden"); document.getElementById("claimerPage").classList.add("hidden"); }
+
+/* =================== DISTANCE =================== */
+function calculateDistance(lat1, lon1, lat2, lon2){
+  const R = 6371; const dLat=(lat2-lat1)*Math.PI/180; const dLon=(lon2-lon1)*Math.PI/180;
+  const a=Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)**2;
+  return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+}
+
+/* =================== AI MATCHING =================== */
+function findNearestNGO(city, qty, expiry){
+  const donor=cityCoords[city]; if(!donor) return null;
+  let bestNGO=null; let bestScore=-1;
+  ngos.forEach(ngo=>{
+    let score=0; const dist=calculateDistance(donor.lat,donor.lon,ngo.lat,ngo.lon);
+    if(dist<10) score+=40; else if(dist<50) score+=20;
+    if(ngo.need>=qty) score+=30; if(expiry<=2) score+=30;
+    if(score>bestScore){ bestScore=score; bestNGO={...ngo,distance:dist.toFixed(2)}; }
+  });
+  return bestNGO;
+}
+
+/* =================== DONATION =================== */
+const form=document.getElementById("donationForm");
+if(form){
+  form.addEventListener("submit", e=>{
+    e.preventDefault();
+    const inputs=form.querySelectorAll("input, select, textarea");
+    const donation={ food:inputs[0].value, city:inputs[1].value, qty:Number(inputs[2].value), expiry:Number(inputs[3].value), notes:inputs[4].value };
+    donations.push(donation); localStorage.setItem("donations",JSON.stringify(donations));
+    alert("✅ Food Donated!"); form.reset();
+    // show Claimer automatically
+    document.getElementById("donorPage").classList.add("hidden"); document.getElementById("claimerPage").classList.remove("hidden");
+    displayFood();
+  });
+}
+
+/* =================== DISPLAY FOOD =================== */
+function displayFood(){
+  const foodList=document.getElementById("foodList"); foodList.innerHTML="";
+  donations.forEach((d,i)=>{
+    const nearest=findNearestNGO(d.city,d.qty,d.expiry);
+    foodList.innerHTML+=`
+    <div class="container">
+      <p><b>${d.food}</b> for ${d.qty} people</p>
+      <p>AI Match: ${nearest?nearest.name+" ("+nearest.distance+" km)":"No match"}</p>
+      <button onclick="claim(${i})">Claim</button>
     </div>
-</section>
+    `;
+  });
+}
 
-<section class="donate-section" id="donate">
-    <h2>Donate Surplus Food</h2>
-
-    <form id="donationForm">
-        <div class="form-group">
-            <input type="text" placeholder="Hotel / Event Name" required>
-            <input type="text" placeholder="Location" required>
-        </div>
-
-        <div class="form-group">
-            <input type="number" placeholder="Food Quantity (People)" required>
-            <select required>
-                <option value="">Food Type</option>
-                <option>Veg</option>
-                <option>Non-Veg</option>
-                <option>Both</option>
-            </select>
-        </div>
-
-        <input type="number" placeholder="Expiry Time (Hours)" required>
-
-        <textarea placeholder="Additional Notes"></textarea>
-
-        <button type="submit" class="btn">Submit Donation</button>
-    </form>
-</section>
-
-<section class="available-section" id="available">
-    <h2>Available Food (AI Suggested)</h2>
-    <div class="food-cards"></div>
-</section>
-
-<footer>
-    <p>© 2026 Food Rescue | AI-Based Food Donation System</p>
-</footer>
-
-<script src="script.js"></script>
+function claim(i){
+  donations.splice(i,1); localStorage.setItem("donations",JSON.stringify(donations)); displayFood();
+}
+</script>
 </body>
 </html>
