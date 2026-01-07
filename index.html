@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Food Rescue | AI Food Donation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav class="navbar">
+    <h2><i class="fa-solid fa-bowl-food"></i> Food Rescue</h2>
+    <ul>
+        <li><a href="#home">Home</a></li>
+        <li><a href="#donate">Donate</a></li>
+        <li><a href="#available">Available</a></li>
+    </ul>
+</nav>
+
+<section class="hero" id="home">
+    <div class="hero-text">
+        <h1>Save Food. <span>Save Lives.</span></h1>
+        <p>AI-powered food donation system to reduce waste and fight hunger.</p>
+        <a href="#donate" class="btn">Donate Food</a>
+    </div>
+</section>
+
+<section class="donate-section" id="donate">
+    <h2>Donate Surplus Food</h2>
+
+    <form id="donationForm">
+        <div class="form-group">
+            <input type="text" placeholder="Hotel / Event Name" required>
+            <input type="text" placeholder="Location" required>
+        </div>
+
+        <div class="form-group">
+            <input type="number" placeholder="Food Quantity (People)" required>
+            <select required>
+                <option value="">Food Type</option>
+                <option>Veg</option>
+                <option>Non-Veg</option>
+                <option>Both</option>
+            </select>
+        </div>
+
+        <input type="number" placeholder="Expiry Time (Hours)" required>
+
+        <textarea placeholder="Additional Notes"></textarea>
+
+        <button type="submit" class="btn">Submit Donation</button>
+    </form>
+</section>
+
+<section class="available-section" id="available">
+    <h2>Available Food (AI Suggested)</h2>
+    <div class="food-cards"></div>
+</section>
+
+<footer>
+    <p>© 2026 Food Rescue | AI-Based Food Donation System</p>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
